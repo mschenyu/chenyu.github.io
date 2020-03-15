@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>vue配置反向代理解决跨域</title>
+    <url>/2020/03/15/vue%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F/</url>
+    <content><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>浏览器是禁止跨域的，但是服务端不禁止，在本地运行<code>npm run dev</code>等命令时实际上是用node运行了一个服务器，IP与后端不一致，所以会产生跨域问题，需要使用如JSONP、跨域代理等手段进行跨域请求，而vue已经帮我们配置好了，只需要设置一下<code>proxyTable</code>就行。因此<code>proxyTable</code>实际上是将请求发给自己的服务器，再由服务器转发给后台服务器，做了一层代理，因为不会出现跨域问题。</p>
+<h2 id="正向代理与反向代理"><a href="#正向代理与反向代理" class="headerlink" title="正向代理与反向代理"></a>正向代理与反向代理</h2><p>正向代理：<br>在客户端和原始服务器(origin server)之间架设一个代理服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/12/28/16f4d151a21d96d8?w=405&h=218&f=jpeg&s=10348" alt=""><br>反向代理：<br>反向代理（Reverse Proxy）方式是指以代理服务器来接受网络上的连接请求，然后将请求转发给内部网络上的服务器，并将服务器上得到的结果返回给请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。客户端无需做任何配置。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/12/28/16f4d159cd179011?w=523&h=271&f=jpeg&s=14059" alt=""></p>
+<p>在前后端分离的网站架构中，服务器经常要配置反向代理，使前端通过固定地址访问后端接口，这样后端服务可以采取负载均衡等性能优化措施，对前端应用透明。 </p>
+<p>假设前端服务器地址为：<code>http://127.0.0.1:8080</code>，后端实际服务地址为：<code>http://server/web-service/userList</code> ，由于涉及到跨域的问题，前端无法直接发http请求给此地址，只能发送同域下的api请求例如：<code>http://127.0.0.1:8080/api/userList</code>， 通过上文介绍，我们了解到需要在前端服务器上配置反向代理，实现将api请求转发至后台服务器的目的。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>配置：<code>config/index.js</code>中的<code>proxyTable</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">dev&#123;</span><br><span class="line">	proxyTable: &#123;</span><br><span class="line">      &#39;&#x2F;api&#39;: &#123;</span><br><span class="line">        target: &#39;http:&#x2F;&#x2F;192.168.0.1:200&#39;, &#x2F;&#x2F; 要代理的域名</span><br><span class="line">        changeOrigin: true,&#x2F;&#x2F;允许跨域</span><br><span class="line">        pathRewrite: &#123;</span><br><span class="line">          &#39;^&#x2F;api&#39;: &#39;&#39; &#x2F;&#x2F; 这个是定义要访问的路径，名字随便写</span><br><span class="line">        &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用时：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; &#x2F;api&#x2F;getMenu相当于*http:&#x2F;&#x2F;192.168.0.1:200&#x2F;getMenu</span><br><span class="line"> &#x2F;&#x2F; &#x2F;api相当于http:&#x2F;&#x2F;192.168.0.1:200</span><br><span class="line"> this.$http.get(&quot;&#x2F;api&#x2F;getMenu&quot;, &#123;</span><br><span class="line"> &#125;</span><br><span class="line"> .then(res &#x3D;&gt; &#123;</span><br><span class="line"> &#125;)</span><br><span class="line"> .catch(function(error) &#123;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+<p>注意：<br>以上面代码设置的为例，会把请求中所有带有/api字段的都替换掉，例如api/getMenu/api，前后两个都会被替换，导致404等错误，在代理数量比较多的时候容易出现这个问题。</p>
+<p>以上配置只是在开发环境（dev）中解决跨域。要解决生产环境的跨域问题,则在<code>config/dev.env.js</code>和<code>config/prod.env.js</code>里也就是开发/生产环境下分别配置一下请求的地址<code>API_HOST</code>，开发环境中我们用上面配置的代理地址api，生产环境下用正常的接口地址。配置代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">module.exports &#x3D; merge(prodEnv, &#123;</span><br><span class="line">  NODE_ENV: &#39;&quot;development&quot;&#39;,     &#x2F;&#x2F;开发环境</span><br><span class="line">  API_HOST:&quot;&#x2F;api&#x2F;&quot;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">module.exports &#x3D; &#123;</span><br><span class="line">  NODE_ENV: &#39;&quot;production&quot;&#39;,      &#x2F;&#x2F;生产环境</span><br><span class="line">  API_HOST:&#39;&quot;http:&#x2F;&#x2F;40.00.100.100:3002&#x2F;&quot;&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>vue</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>testPage</title>
     <url>/2020/03/15/testPage/</url>
     <content><![CDATA[<h2 id="向晚行"><a href="#向晚行" class="headerlink" title="向晚行"></a>向晚行</h2>]]></content>
