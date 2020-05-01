@@ -5,12 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>testPage - 星延</title>
+    <title>vue双向数据绑定原理 - 星延</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="Fechin,"> 
-    <meta name="description" content="向晚行"> 
+    <meta name="description" content="核心是利用ES5的Object.defineProperty,这个方法不兼容ie8及以下浏览器，这也是vue为什么不能兼容ie8及以下浏览器的原因。
+
+Object.defineProperty方法,"> 
     <meta name="author" content="chenyu"> 
     <link rel="alternative" href="atom.xml" title="星延" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -38,7 +40,7 @@
     <div class="bar" style="width: 0;"></div>
     <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://mschenyu.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
-    <h3 class="subtitle">testPage</h3>
+    <h3 class="subtitle">vue双向数据绑定原理</h3>
     <div class="social">
         <div>
             <div class="share">
@@ -53,16 +55,29 @@
     <div class="section">
         <div class="article">
     <div class='main'>
-        <h1 class="title">testPage</h1>
+        <h1 class="title">vue双向数据绑定原理</h1>
         <div class="stuff">
-            <span>三月 15, 2020</span>
+            <span>三月 16, 2020</span>
             
-  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li></ul>
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/vue/" rel="tag">vue</a></li></ul>
 
 
         </div>
         <div class="content markdown">
-            <h2 id="向晚行"><a href="#向晚行" class="headerlink" title="向晚行"></a>向晚行</h2>
+            <p>核心是利用ES5的Object.defineProperty,这个方法不兼容ie8及以下浏览器，这也是vue为什么不能兼容ie8及以下浏览器的原因。</p>
+<ul>
+<li>Object.defineProperty方法可以直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回这个对象。</li>
+<li>observe的功能就是用来监测数据的变化。Observe是一个类，它的作用是给对象属性添加getter和setter，用于依赖收集和派发更新。实现方式是给非VNode的对象类型数据添加一个Observe，如果已经添加的则直接返回，否则在满足一定条件下去实例化一个Observe对象实例。</li>
+</ul>
+<h2 id="依赖收集-getter（重点关注以下两点）"><a href="#依赖收集-getter（重点关注以下两点）" class="headerlink" title="依赖收集 getter（重点关注以下两点）"></a>依赖收集 getter（重点关注以下两点）</h2><ul>
+<li>const dep = new Dep()   //实例化一个Dep实例</li>
+<li>在get函数中通过dep.depend做依赖收集</li>
+</ul>
+<p>Dep是一个class，它定义了一些属性和方法，它有一个静态属性target，这是一个全局唯一的watcher（同一时间内只能有一个全局的watcher被计算）。Dep实际上就是对watcher的一种管理，Dep脱离watcher单独存在是没有意义的。watcher和dep就是典型的观察者设计模式。</p>
+<p>watcher是一个class，在它的构造函数中定义了一些和Dep相关的属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">this.deps &#x3D; []</span><br><span class="line">this.newDeps &#x3D; []</span><br><span class="line">this.depIds &#x3D; new Set()</span><br><span class="line">this.newDepIds &#x3D; new Set()</span><br></pre></td></tr></table></figure>
+<h3 id="收集过程"><a href="#收集过程" class="headerlink" title="收集过程"></a>收集过程</h3><p>当我们实例化一个渲染watcher的时候，首先进入watcher的构造函数逻辑，然后执行它的this.get()方法，进入get函数把Dep.target赋值为当前渲染watcher并压线（为了恢复用）。接着执行vm._render()方法，生成渲染函数VNode，并且在这个过程对vm上的数据访问，这个时候就触发数据对象的getter（在此期间执行Dep.target.addDep(this）方法，将watcher订阅到这个数据持有的dep的subs中，为后续数据变化时通知到哪些subs做准备）。然后递归遍历添加所有子项getter。<br>watcher在构造函数中初始化两个Dep实例数组。newDeps代表新添加的Dep实例数组。newDeps代表新添加的Dep实例</p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
                 <source type="audio/mpeg" src="">
