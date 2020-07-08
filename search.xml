@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>nodejs概述</title>
+    <url>/2020/07/08/nodejs%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<h1 id="什么是nodejs"><a href="#什么是nodejs" class="headerlink" title="什么是nodejs"></a>什么是nodejs</h1><p>nodejs是一个构建于chrome v8引擎之上的一个JavaScript运行时环境，在node出现之前，JavaScript只能运行在浏览器端，因为它需要js引擎去编译执行，而js引擎都是各大浏览器厂商提供的；node将chrome的v8引擎移植出来，作为node的运行时环境，使得JavaScript可以运行在浏览器之外。<br>那么，nodejs和chrome有什么区别呢？<br>虽然他们都可以解析JavaScript代码，但chrome是浏览器环境，nodejs是服务端环境，所以他们提供的全局api会有所不同，比如alert，document，location，history这些api只在浏览器环境存在，而node中特有api有：path，fs，http等，并且在服务端也不用操作dom，处理浏览器兼容性。<br>node并不是对v8做了简单的封装，提供一些api调用就完了，它还针对性的做了一些优化，比如在服务端处理二进制数据通常是必不可少的，但JavaScript没有二进制数据类型，因此node增加了buffer类，方便高效地处理二进制数据。</p>
+<h1 id="nodejs可以用来做什么"><a href="#nodejs可以用来做什么" class="headerlink" title="nodejs可以用来做什么"></a>nodejs可以用来做什么</h1><ol>
+<li>搭建前端开发环境</li>
+<li>网站服务器</li>
+<li>cli程序 如hexo</li>
+</ol>
+<h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><h2 id="读写文件系统"><a href="#读写文件系统" class="headerlink" title="读写文件系统"></a>读写文件系统</h2><h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<li>高并发性能好</li>
+<li>npm社区活跃 包多（但可靠性不保证）</li>
+<li>语言统一</li>
+</ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>debug比别的语言困难</li>
+<li>逻辑复杂时callback过多</li>
+<li>异常处理</li>
+<li>可靠性</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>node</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo踩坑</title>
     <url>/2020/07/08/hexo%E8%B8%A9%E5%9D%91/</url>
     <content><![CDATA[<h2 id="hexo-deploy默认使用的是全局的user-name和user-email"><a href="#hexo-deploy默认使用的是全局的user-name和user-email" class="headerlink" title="hexo deploy默认使用的是全局的user.name和user.email"></a>hexo deploy默认使用的是全局的user.name和user.email</h2><p>如果你全局的git config配的是公司的信息，就得注意了，就算改了当前项目的user信息，它在push的时候也带的是全局的。怎么改呢？<br>可以在_config.yml里面设置，hexo d 的时候会自动push代码到相应的repo  </p>
