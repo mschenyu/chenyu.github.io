@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>hexo踩坑</title>
+    <url>/2020/07/08/hexo%E8%B8%A9%E5%9D%91/</url>
+    <content><![CDATA[<h2 id="hexo-deploy默认使用的是全局的user-name和user-email"><a href="#hexo-deploy默认使用的是全局的user-name和user-email" class="headerlink" title="hexo deploy默认使用的是全局的user.name和user.email"></a>hexo deploy默认使用的是全局的user.name和user.email</h2><p>如果你全局的git config配的是公司的信息，就得注意了，就算改了当前项目的user信息，它在push的时候也带的是全局的。怎么改呢？<br>可以在_config.yml里面设置，hexo d 的时候会自动push代码到相应的repo  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &lt;repository url&gt;</span><br><span class="line">  branch: [branch]</span><br><span class="line">  name: [git user]</span><br><span class="line">  email: [git email]</span><br></pre></td></tr></table></figure>
+
+<h2 id="在-deploy-git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了"><a href="#在-deploy-git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了" class="headerlink" title="在.deploy_git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了"></a>在<code>.deploy_git</code>目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了</h2><p>再执行一次<code>hexo d</code> 会生产一个磨默认的”First commit”和你hexo d的那个</p>
+]]></content>
+  </entry>
+  <entry>
     <title>vue双向数据绑定原理</title>
     <url>/2020/03/16/vue%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>核心是利用ES5的Object.defineProperty,这个方法不兼容ie8及以下浏览器，这也是vue为什么不能兼容ie8及以下浏览器的原因。</p>

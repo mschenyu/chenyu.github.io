@@ -5,12 +5,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tag: vue - 星延</title>
+    <title>hexo踩坑 - 星延</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="Fechin,"> 
-    
+    <meta name="description" content="hexo deploy默认使用的是全局的user.name和user.email如果你全局的git config配的是公司的信息，就得注意了，就算改了当前项目的user信息，它在push的时候也带的,"> 
     <meta name="author" content="chenyu"> 
     <link rel="alternative" href="atom.xml" title="星延" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -33,106 +33,76 @@
 <body class="loading">
     <span id="config-title" style="display:none">星延</span>
     <div id="loader"></div>
-    <div class="nav">
-    <ul id="menu-menu" class="menu">
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="//" title="首页" target="_blank" rel="noopener">首页</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/categories/" title="分类" target="_blank" rel="noopener">分类</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/tags/" title="标签" target="_blank" rel="noopener">标签</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/archives/" title="归档" target="_blank" rel="noopener">归档</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/about/" title="关于" target="_blank" rel="noopener">关于</a>
-        </li>
-        
-    </ul>
-	<span class="target"></span>
-	<center>
-	<div class="hitokoto">
-		<span class="typed" id="hitokoto" data-st="true"></span>
-	</div>
-	</center>
-	
-	<p class="footerlinks">
-		<a href="#" class="iconfont icon-null"></a>
-		
-            <a href="https://github.com/mschenyu" title="github" class="iconfont icon-github" target="_blank" rel="noopener"> </a>
-        
-            <a href="mailto:18220176924@163.com" title="email" class="iconfont icon-email" target="_blank" rel="noopener"> </a>
-        
-		<a href="#" class="iconfont icon-null"></a>
-	</p>
-	
-    <p id="copyright">
-        &copy; 2020 chenyu.
-        <span> | </span>Powered by <a href="https://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
-        <span> | </span>Theme <a href="https://github.com/Fechin/hexo-theme-diaspora" title="Diaspora" target="_blank" rel="noopener">Diaspora</a> by Fechin
-		
-    </p>
-</div>
-
-<div id="container">
-    
-<div id="screen">
-    <div id="mark">
-        <div class="layer" data-depth="0.4">
-            <img src="/img/girl2.jpg" id="cover" crossorigin="anonymous" width="1920" height="1080">
-        </div>
-    </div>
-    <div id="vibrant">
-        <svg viewBox="0 0 2880 1620" height="100%" preserveAspectRatio="xMaxYMax slice">
-            <polygon opacity="0.7" points="2000,1620 0,1620 0,0 600,0 "/>
-        </svg>
-        <div></div>
-    </div>
-    <div id="header">
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://mschenyu.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">hexo踩坑</h3>
+    <div class="social">
         <div>
-            <a class="image-logo" href="/"></a>
-			
-            <div class="iconfont icon-menu switchmenu"></div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
         </div>
     </div>
-    
-    <div id="post0">
-        <p>三月 16, 2020</p>
-        <h2><a href="/2020/03/16/vue%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%8E%9F%E7%90%86/" title="vue双向数据绑定原理" class="posttitle">vue双向数据绑定原理</a></h2>
-        <p class="summary">核心是利用ES5的Object.defineProperty,这个方法不兼容ie8及以下浏览器，这也是vue为什么...</p>
-    </div>
-    
+    <div class="scrollbar"></div>
 </div>
 
-    <div id="primary">
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">hexo踩坑</h1>
+        <div class="stuff">
+            <span>七月 08, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="hexo-deploy默认使用的是全局的user-name和user-email"><a href="#hexo-deploy默认使用的是全局的user-name和user-email" class="headerlink" title="hexo deploy默认使用的是全局的user.name和user.email"></a>hexo deploy默认使用的是全局的user.name和user.email</h2><p>如果你全局的git config配的是公司的信息，就得注意了，就算改了当前项目的user信息，它在push的时候也带的是全局的。怎么改呢？<br>可以在_config.yml里面设置，hexo d 的时候会自动push代码到相应的repo  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &lt;repository url&gt;</span><br><span class="line">  branch: [branch]</span><br><span class="line">  name: [git user]</span><br><span class="line">  email: [git email]</span><br></pre></td></tr></table></figure>
+
+<h2 id="在-deploy-git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了"><a href="#在-deploy-git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了" class="headerlink" title="在.deploy_git目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了"></a>在<code>.deploy_git</code>目录已经生成的情况下，如果不小心把它删了，原来所有的提交记录全都没有了</h2><p>再执行一次<code>hexo d</code> 会生产一个磨默认的”First commit”和你hexo d的那个</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
         
-<div class="post">
-    <a href="/2020/03/15/vue%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F/" title="vue配置反向代理解决跨域">
-        <img src="/img/girl2.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>三月 15, 2020</p>
-        <h3><a href="/2020/03/15/vue%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F/" title="vue配置反向代理解决跨域" class="posttitle">vue配置反向代理解决跨域</a></h3>
-        <p>原理浏览器是禁止跨域的，但是服务端不禁止，在本地运行npm run dev等命令时实际上是用node运行了一个服务器，IP与后端不一致，所以会产生跨域问题...</p>
-    </div>
-</div>
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
 
 
     </div>
     
 </div>
-<div id="preview"></div>
 
 
-
+    </div>
+</div>
 </body>
 
 
