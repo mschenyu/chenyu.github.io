@@ -68,8 +68,11 @@
 <li>网站服务器</li>
 <li>cli程序 如hexo</li>
 </ol>
-<h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><h2 id="读写文件系统"><a href="#读写文件系统" class="headerlink" title="读写文件系统"></a>读写文件系统</h2><h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
-<li>高并发性能好</li>
+<h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><p>作为正经的服务端语言，node无需额外的容器，即可轻松构建服务器，node提供了net、dgram、http、https模块分别用于构建TCP、UDP、HTTP、HTTS服务，包括服务端和客户端。<br>创建好服务器之后，</p>
+<h2 id="读写文件系统"><a href="#读写文件系统" class="headerlink" title="读写文件系统"></a>读写文件系统</h2><h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><p>JavaScript是运行在单进程的单线程上的，这可以说是一把双刃剑，好处是程序状态是单一的，没有多线程的锁、线程同步等问题，并且操作系统在调度时也因为较少上下文的切换，可以很好地提高CPU的使用率。坏处是无法充分利用多核CPU的能力，并且单线程无法保证进程的健壮性和稳定性，一旦有异常没有被捕获，将导致整个进程异常退出。<br>为了解决上面的问题，node提供了child_process模块来创建子进程，并且父子进程之间可以通过message事件和send方法进行通信</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>作为服务端开发时，</p>
+<h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<li>高并发性能好 </li>
 <li>npm社区活跃 包多（但可靠性不保证）</li>
 <li>语言统一</li>
 </ol>
