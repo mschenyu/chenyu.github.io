@@ -70,8 +70,38 @@
 </ol>
 <h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><p>作为正经的服务端语言，node无需额外的容器，即可轻松构建服务器，node提供了net、dgram、http、https模块分别用于构建TCP、UDP、HTTP、HTTS服务，包括服务端和客户端。<br>创建好服务器之后，</p>
 <h2 id="读写文件系统"><a href="#读写文件系统" class="headerlink" title="读写文件系统"></a>读写文件系统</h2><h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><p>JavaScript是运行在单进程的单线程上的，这可以说是一把双刃剑，好处是程序状态是单一的，没有多线程的锁、线程同步等问题，并且操作系统在调度时也因为较少上下文的切换，可以很好地提高CPU的使用率。坏处是无法充分利用多核CPU的能力，并且单线程无法保证进程的健壮性和稳定性，一旦有异常没有被捕获，将导致整个进程异常退出。<br>为了解决上面的问题，node提供了child_process模块来创建子进程，并且父子进程之间可以通过message事件和send方法进行通信</p>
-<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>作为服务端开发时，</p>
-<h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>为什么我们要学习内存管理？在nodejs出现之前，JavaScript大多数场景运行在网页应用上，它的执行时间较短，且运行在用户的机器上，即使内存使用过多或内存泄漏，也只会影响到终端用户，一般如果页面卡顿用户也会不耐烦的刷新页面，随着进程的退出，内存也会释放，几乎没有内存管理的必要。但node应用在服务端，就要长时间面对海量的请求，js开发者就需要考虑一些平常不会形成影响的问题，比如说如果一个请求形成1kb的内存泄漏，那么在高并发的情况下，内存很快就会爆仓，学习内存的管理和控制是必不可少的。在服务端，资源向来是寸土寸金，所以我们要使一切资源都高效循环利用。</p>
+<h3 id="内存限制"><a href="#内存限制" class="headerlink" title="内存限制"></a>内存限制</h3><p>node是基于v8构建的，所以node中的js对象是通过v8来分配和管理的，在v8中，所有的JavaScript对象都是通过堆来进行分配的，当我们在代码中声明变量并赋值时，所使用对象的内存就分配在堆中，如果已申请的堆空闲内存不够分配新的对象，将继续申请堆内存，直到堆的大小超过v8的限制，引起进程出错。<br>v8对js使用内存的限制（64位系统下约为1.4 GB，32位系统下约为0.7 GB），导致我们在node中也受到了限制，无法直接操作大内存对象，但是可以通过其他手段规避这个限制，比如使用 –max-old-space-size在初始化时（不能在进程中动态调整）改变内存大小，或者使用buffer、stream等。<br>v8为什么要限制内存呢？<br>一是因为v8最初是为浏览器而设计，对于网页来说（每个标签页就是一个v8实例），v8的限制值已经绰绰有余。更深层的原因是因为v8的垃圾回收机制的限制，如果内存太大，做一次垃圾回收的时间会很久（达到几秒），垃圾回收会引起JavaScript线程暂停执行，在这样的时间花销下，应用的性能和响应能力都直线下降，不管是前端和服务端都无法接受。因此，在当时的考虑下限制堆内存是一个好的选择。</p>
+<h3 id="v8垃圾回收机制"><a href="#v8垃圾回收机制" class="headerlink" title="v8垃圾回收机制"></a>v8垃圾回收机制</h3><p>v8的垃圾回收主要基于分代式垃圾回收机制，即按对象的存活时间将内存分为新生代和老生代，然后分别对不同分代的内存实施适合它的回收算法。新生代中是存活数量较少且存活时间较短的对象，老生代中是存活数量较多且存活时间较长或常驻内存的对象；  </p>
+<p>新生代中的对象主要通过Scavenge算法进行垃圾回收，Scavenge算法将内存空间分为两部分，处于使用状态的空间称为from空间，处于闲置状态的空间称为to空间，当我们分配对象时，使用的是from空间，当开始进行垃圾回收时，先检查from空间中的存活对象，然后把他们复制到to空间中，然后清空from空间，完成复制后，from空间和to空间中的角色对换。当一个对象被复制多次依然存活时，会被晋升到老生代中，使用新的回收算法进行管理。<br>Scavenge算法的缺点是只能使用堆内存的一半，优点是只复制存活对象，并且在新生代中，对象生命周期短且存活对象只占少部分，所以在时间上很有优势。Scavenge是典型的以空间换时间，不能大规模的应用到所有垃圾回收中，但它非常适合新生代。  </p>
+<p>老生代中使用Mark-Sweep和Mark-Compact相结合的方式进行垃圾回收，Mark-sweep就是我们耳熟能详的标记清除，它分为标记和清除两个阶段，在标记阶段遍历堆中所有的对象，并标记活着的对象，在随后的清除阶段，只清除没有被标记的对象。在进行完一次清除后，由于对象位置不动，内存空间会出现不连续的现象，这时如果要分配一个大对象的话，所有碎片空间都无法满足此次分配，就会提前触发垃圾回收，而这次回收是不必要的。为了解决这个问题，Mark-Compact（标记整理）被提了出来，它在对象被标记为死亡后，在整理的过程中，将活着的对象往一端移动，移动完成后，直接清理掉边界外的内存（包括死亡对象和存活对象移动后留下的空洞）。<br>由于Mark-Compact需要移动对象，所以它的执行速度肯定不如标记清除，所以在取舍上，V8主要使用Mark-Sweep，在空间不足以对从新生代中晋升过来的对象进行分配时才使用Mark-Compact。</p>
+<p>Scavenge和Mark-Sweep的区别：</p>
+<ol>
+<li>Scavenge会移动对象的位置，Mark-Sweep清除时，对象位置不变</li>
+<li>Scavenge中只复制活着的对象，而Mark-Sweep只清理死亡对象。（活对象在新生代中只占较小部分，死对象在老生代中只占较小部分，这是两种回收方式能高效处理的原因）</li>
+</ol>
+<p>不会被回收的情况</p>
+<h3 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h3><p>内存泄漏的本质：应当回收的对象出现意外而没有被回收，变成了常驻在老生代中的对象。<br>造成内存泄漏的常见原因：</p>
+<ol>
+<li><p>将内存当缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var cache &#x3D; &#123;&#125;; </span><br><span class="line">var get &#x3D; function (key) &#123; </span><br><span class="line"> if (cache[key]) &#123; </span><br><span class="line"> return cache[key]; </span><br><span class="line"> &#125; else &#123; </span><br><span class="line"> &#x2F;&#x2F; get from otherwise </span><br><span class="line"> &#125; </span><br><span class="line">&#125;; </span><br><span class="line">var set &#x3D; function (key, value) &#123; </span><br><span class="line"> cache[key] &#x3D; value; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>JavaScript开发者通常喜欢用对象的键值对来缓存东西，这种缓存以内存空间换CPU执行时间，如果限定缓存对象的大小，防止内存无限制的增长，还是可以一用的。<br>但这与严格意义上的缓存又有着区别，严格意义的缓存有着完善的过期策略，而普通对象的键值对并没有。<br>如果需要使用大量缓存，目前比较好的解决方案是采用进程外的缓存，进程自身不存储状态，外部的缓存软件有着良好的缓存过期淘汰策略以及自有的内存管理，不影响Node进程的性能，而且进程之间可以共享缓存。目前，市面上较好的缓存有Redis和Memcached。</p>
+</li>
+<li><p>异步队列事件堆积<br>队列在消费者生产者模型中经常充当中间产物。这是一个容易忽略的情况，因为在大多数应用场景下，消费的速度远远大于生产的速度，内存泄漏不易产生。但是如果生产速度因为某些原因突然激增，或者消费速度因为突然的系统故障降低，使消费速度低于生产速度，将会形成堆积，造成内存泄漏。<br>解决方案应该是监控队列的长度，一旦堆积，应当通过监控系统产生报警并通知相关人员。另一个解决方案是任意异步调用都应该包含超时机制，一旦在限定的时间内未完成响应，通过回调函数传递超时异常，使得任意异步调用的回调都具备可控的响应时间，给消费速度一个下限值。</p>
+</li>
+<li><p>全局变量引用</p>
+</li>
+<li><p>闭包<br>闭包会返回一个具有父级函数作用域的中间函数，一旦有变量引用这个中间函数，这个中间函数将不会释放，同时也会使原始的作用域得不到释放，作用域中产生的内存也就不能释放，除非不再引用，才会逐步释放。</p>
+</li>
+</ol>
+<p>由于v8的内存限制，要十分小心此类无法立即回收的变量引用是否无限制的增加，因为它会导致老生代中的对象增多。</p>
+<h3 id="排查方案"><a href="#排查方案" class="headerlink" title="排查方案"></a>排查方案</h3><ol>
+<li>查看垃圾回收日志<br>在启动时添加–trace_gc参数</li>
+<li>查看进程的内存占用<br>调用process.memoryUsage()，其输出的heapUsed表示目前堆中使用中的内存量</li>
+<li>使用node-heapdump，它允许对V8堆内存抓取快照，用于事后分析</li>
+</ol>
+<h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><p>内存消耗低，且适合处理高并发</p>
+<h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
 <li>高并发性能好 </li>
 <li>npm社区活跃 包多（但可靠性不保证）</li>
 <li>语言统一</li>
