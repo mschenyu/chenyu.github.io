@@ -101,3 +101,5 @@ deploy:
   type: git
   repo: https://github.com/mschenyu/mschenyu.github.io.git
   branch: master
+  name: chenyu
+  email: 18220176924@163.com
