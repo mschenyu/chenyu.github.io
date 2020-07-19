@@ -64,11 +64,17 @@
         <div class="content markdown">
             <h1 id="什么是nodejs"><a href="#什么是nodejs" class="headerlink" title="什么是nodejs"></a>什么是nodejs</h1><p>nodejs是一个构建于chrome v8引擎之上的一个JavaScript运行时环境，在node出现之前，JavaScript只能运行在浏览器端，因为它需要js引擎去编译执行，而js引擎都是各大浏览器厂商提供的；node将chrome的v8引擎移植出来，作为node的运行时环境，使得JavaScript可以运行在浏览器之外。<br>那么，nodejs和chrome有什么区别呢？<br>虽然他们都可以解析JavaScript代码，但chrome是浏览器环境，nodejs是服务端环境，所以他们提供的全局api会有所不同，比如alert，document，location，history这些api只在浏览器环境存在，而node中特有api有：path，fs，http等，并且在服务端也不用操作dom，处理浏览器兼容性。<br>node并不是对v8做了简单的封装，提供一些api调用就完了，它还针对性的做了一些优化，比如在服务端处理二进制数据通常是必不可少的，但JavaScript没有二进制数据类型，因此node增加了buffer类，方便高效地处理二进制数据。</p>
 <h1 id="nodejs可以用来做什么"><a href="#nodejs可以用来做什么" class="headerlink" title="nodejs可以用来做什么"></a>nodejs可以用来做什么</h1><ol>
-<li>搭建前端开发环境</li>
+<li>搭建前端开发环境 </li>
+</ol>
+<ul>
+<li>npm init 初始化package.json </li>
+<li>webpack基于node</li>
+</ul>
+<ol start="2">
 <li>网站服务器</li>
 <li>cli程序 如hexo</li>
 </ol>
-<h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><p>作为正经的服务端语言，node无需额外的容器，即可轻松构建服务器，node提供了net、dgram、http、https模块分别用于构建TCP、UDP、HTTP、HTTS服务，包括服务端和客户端。<br>创建好服务器之后，</p>
+<h1 id="node提供的功能"><a href="#node提供的功能" class="headerlink" title="node提供的功能"></a>node提供的功能</h1><h2 id="构建web应用"><a href="#构建web应用" class="headerlink" title="构建web应用"></a>构建web应用</h2><p>node无需额外的容器，即可轻松构建服务器，node提供了net、dgram、http、https模块分别用于构建TCP、UDP、HTTP、HTTS服务，包括服务端和客户端。</p>
 <h2 id="读写文件系统"><a href="#读写文件系统" class="headerlink" title="读写文件系统"></a>读写文件系统</h2><h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><p>JavaScript是运行在单进程的单线程上的，这可以说是一把双刃剑，好处是程序状态是单一的，没有多线程的锁、线程同步等问题，并且操作系统在调度时也因为较少上下文的切换，可以很好地提高CPU的使用率。坏处是无法充分利用多核CPU的能力，并且单线程无法保证进程的健壮性和稳定性，一旦有异常没有被捕获，将导致整个进程异常退出。<br>为了解决上面的问题，node提供了child_process模块来创建子进程，并且父子进程之间可以通过message事件和send方法进行通信</p>
 <h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>为什么我们要学习内存管理？在nodejs出现之前，JavaScript大多数场景运行在网页应用上，它的执行时间较短，且运行在用户的机器上，即使内存使用过多或内存泄漏，也只会影响到终端用户，一般如果页面卡顿用户也会不耐烦的刷新页面，随着进程的退出，内存也会释放，几乎没有内存管理的必要。但node应用在服务端，就要长时间面对海量的请求，js开发者就需要考虑一些平常不会形成影响的问题，比如说如果一个请求形成1kb的内存泄漏，那么在高并发的情况下，内存很快就会爆仓，学习内存的管理和控制是必不可少的。在服务端，资源向来是寸土寸金，所以我们要使一切资源都高效循环利用。</p>
 <h3 id="内存限制"><a href="#内存限制" class="headerlink" title="内存限制"></a>内存限制</h3><p>node是基于v8构建的，所以node中的js对象是通过v8来分配和管理的，在v8中，所有的JavaScript对象都是通过堆来进行分配的，当我们在代码中声明变量并赋值时，所使用对象的内存就分配在堆中，如果已申请的堆空闲内存不够分配新的对象，将继续申请堆内存，直到堆的大小超过v8的限制，引起进程出错。<br>v8对js使用内存的限制（64位系统下约为1.4 GB，32位系统下约为0.7 GB），导致我们在node中也受到了限制，无法直接操作大内存对象，但是可以通过其他手段规避这个限制，比如使用 –max-old-space-size在初始化时（不能在进程中动态调整）改变内存大小，或者使用buffer、stream等。<br>v8为什么要限制内存呢？<br>一是因为v8最初是为浏览器而设计，对于网页来说（每个标签页就是一个v8实例），v8的限制值已经绰绰有余。更深层的原因是因为v8的垃圾回收机制的限制，如果内存太大，做一次垃圾回收的时间会很久（达到几秒），垃圾回收会引起JavaScript线程暂停执行，在这样的时间花销下，应用的性能和响应能力都直线下降，不管是前端和服务端都无法接受。因此，在当时的考虑下限制堆内存是一个好的选择。</p>
@@ -100,13 +106,16 @@
 <li>查看进程的内存占用<br>调用process.memoryUsage()，其输出的heapUsed表示目前堆中使用中的内存量</li>
 <li>使用node-heapdump，它允许对V8堆内存抓取快照，用于事后分析</li>
 </ol>
-<h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><p>内存消耗低，且适合处理高并发</p>
+<h1 id="node的特性"><a href="#node的特性" class="headerlink" title="node的特性"></a>node的特性</h1><h2 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h2><h2 id="事件驱动，异步I-O"><a href="#事件驱动，异步I-O" class="headerlink" title="事件驱动，异步I/O"></a>事件驱动，异步I/O</h2><p>传统的服务端语言在处理高并发时通常采用多进程和多线程的方式，线程是系统并行处理多任务所使用的方式，每一个发给服务器的请求都会开启一个新的线程，而每个线程会获取它运行代码所需要的一切。但这会带来一个副作用，当请求数达到一定数量时，过多的线程会耗尽系统内存和资源。而node采用单线程和事件循环来处理并发任务，避免了内存浪费，同时还能以极快的速度处理大量并发任务。<br>什么是事件循环？node是一个单线程事件驱动的运行环境，也就是说，在node里，任何事都是对事件的响应。事件循环就是等待一个事件然后在需要事件发生时去触发他们的程序。node不需要为每一个请求开启一个新的线程，它会接收所有请求，然后将大部分任务委托给其他系统。libuv就是一个依赖于OS内核去高效处理这些任务的库，当这些隐藏于幕后的工作者处理完委托给他们的事情后，它们会触发绑定在这些事件上的回调函数去通知nodejs。</p>
+<p>其他语言为什么不用node的方式处理高并发？<br>首先，node并不是完美无瑕的，它不适合处理CPU密集型操作，而多线程正擅长于此。<br>再者，因为他们的底层是同步I/O，比如现在需要读取文件并将该文件返回给浏览器，服务器首先通知文件系统去读取指定文件并返回它的内容，发出通知后会一直等待它完成读取文件的操作，而不是转头去处理其他任务，这种方式很显然会造成阻塞的情况，如果使用单线程，所有请求就得排队执行，等待的时间是让人无法忍受的。所以只能用多线程多进程解决并发任务。</p>
 <h1 id="node的优势和缺点"><a href="#node的优势和缺点" class="headerlink" title="node的优势和缺点"></a>node的优势和缺点</h1><h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
 <li>高并发性能好 </li>
-<li>npm社区活跃 包多（但可靠性不保证）</li>
+<li>npm社区活跃 包多</li>
 <li>语言统一</li>
+<li>占用内存低</li>
 </ol>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>node并不是所有项目的最佳解决方案，它不适合CPU密集型操作的应用，因为js是单线程的，当你的js代码中有大量计算逻辑，会造成线程阻塞，而多线程系统就比较擅长处理CPU密集型操作，每一个请求都会被一个新的线程处理，那么主线程就可以被解放出来去处理一些更重要的事情。<br>0. 不适合CPU密集型操作的应用</p>
+<ol>
 <li>debug比别的语言困难</li>
 <li>逻辑复杂时callback过多</li>
 <li>异常处理</li>
