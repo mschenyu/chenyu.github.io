@@ -57,7 +57,7 @@
         <div class="stuff">
             <span>七月 08, 2020</span>
             
-  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/node/" rel="tag">node</a></li></ul>
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li></ul>
 
 
         </div>
@@ -114,8 +114,9 @@
 <li>语言统一</li>
 <li>占用内存低</li>
 </ol>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>node并不是所有项目的最佳解决方案，它不适合CPU密集型操作的应用，因为js是单线程的，当你的js代码中有大量计算逻辑，会造成线程阻塞，而多线程系统就比较擅长处理CPU密集型操作，每一个请求都会被一个新的线程处理，那么主线程就可以被解放出来去处理一些更重要的事情。<br>0. 不适合CPU密集型操作的应用</p>
-<ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>node并不是所有项目的最佳解决方案，它不适合CPU密集型操作的应用，因为js是单线程的，当你的js代码中有大量计算逻辑，会造成线程阻塞，而多线程系统就比较擅长处理CPU密集型操作，每一个请求都会被一个新的线程处理，那么主线程就可以被解放出来去处理一些更重要的事情。  </p>
+<ol start="0">
+<li>不适合 CPU 密集型的应用，如视频编解码</li>
 <li>debug比别的语言困难</li>
 <li>逻辑复杂时callback过多</li>
 <li>异常处理</li>
